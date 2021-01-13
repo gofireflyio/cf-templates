@@ -1,0 +1,83 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Infralight AWS Config Security Audit Integration
+Mappings:
+  InfralightEnvironment:
+    env:
+      organizationID: "094724549126"
+      SnsNameForConfirmCustomerDeployment: "handle-customer-actions"
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Parameters:
+          - ResourceNamePrefix
+          - ExternalID
+    ParameterLabels:
+      ResourceNamePrefix:
+        default: Resource name prefix
+      ExternalID:
+        default: ExternalID
+Parameters:
+  ResourceNamePrefix:
+    Description: >-
+      Names of resources created by the stack will be prefixed with this value
+      to ensure uniqueness.
+    Type: String
+    Default: infralight
+    MinLength: '1'
+    MaxLength: '45'
+    AllowedPattern: '^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$'
+    ConstraintDescription: >-
+      Invalid resource name prefix value.  Must match pattern
+      ^[a-zA-Z0-9]+(?:-[a-zA-Z0-9]+)*$
+  ExternalID:
+    Description: >-
+      The cross-account access role created by the stack will use this value for
+      its ExternalID. Do not change this value!
+    Type: String
+    MinLength: '2'
+    MaxLength: '1224'
+    AllowedPattern: '[\w+=,.@:\/-]*'
+    ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
+Conditions: {}
+Resources:
+  InfralightCWSSACrossAccountAccessRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: !Join
+        - ''
+        - - !Ref ResourceNamePrefix
+          - '-infralightcwssarole'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              AWS: !Join
+                - ''
+                - - 'arn:aws:iam::'
+                  - !FindInMap
+                    - InfralightEnvironment
+                    - env
+                    - organizationID
+                  - ':root'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalID
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/SecurityAudit'
+        - 'arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
+Outputs:
+  RoleARN:
+    Description: >-
+      Cross-account access role ARN to share with Infralight
+      integration
+    Value: !GetAtt
+      - InfralightCWSSACrossAccountAccessRole
+      - Arn
+  ExternalID:
+    Description: ExternalID to share with Infralight
+    Value: !Ref ExternalID
+  TemplateVersion:
+    Description: infralight.co template version
+    Value: 1.0.0
