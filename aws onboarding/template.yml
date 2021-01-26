@@ -40,6 +40,20 @@ Parameters:
     ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
 Conditions: {}
 Resources:
+
+  InfraLightReadonlyPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+
+          - Effect: Allow
+            Action:
+              - 'ec2:SearchTransitGatewayRoutes'
+            Resource:
+              - '*'
+
   InfralightCWSSACrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -67,6 +81,7 @@ Resources:
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/SecurityAudit'
         - 'arn:aws:iam::aws:policy/AWSCloudFormationReadOnlyAccess'
+        - !Ref InfraLightReadonlyPolicy
 Outputs:
   RoleARN:
     Description: >-
