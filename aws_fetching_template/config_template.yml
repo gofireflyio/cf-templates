@@ -40,39 +40,37 @@ Parameters:
     ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
 Conditions: {}
 Resources:
-
   InfraLightReadonlyPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
         Version: 2012-10-17
         Statement:
-
           - Effect: Allow
-            Action:
-              - 'apigateway:GET',
-              - 'cloudwatch:ListDashboards',
-              - 'cloudwatch:GetDashboard',
-              - 'ec2:SearchTransitGatewayRoutes',
-              - 'eks:ListNodegroups',
-              - 'eks:ListFargateProfiles',
-              - 'eks:ListTagsForResource',
-              - 'eks:DescribeNodegroup',
-              - 'eks:DescribeFargateProfile',
-              - 'states:DescribeStateMachine',
-              - 'states:ListStateMachines',
-              - 'states:ListTagsForResource',
-              - 'sns:ListSubscriptionsByTopic',
-              - 'sns:ListTopics',
-              - 'sns:ListSubscriptions',
-              - 'ses:GetIdentityMailFromDomainAttributes',
-              - 'ses:GetIdentityVerificationAttributes',
-              - 'sns:GetSubscriptionAttributes',
-              - 'ses:GetIdentityDkimAttributes',
-              - 'ses:ListIdentities'
+            Action: [
+              'apigateway:GET',
+              'cloudwatch:ListDashboards',
+              'cloudwatch:GetDashboard',
+              'ec2:SearchTransitGatewayRoutes',
+              'eks:ListNodegroups',
+              'eks:ListFargateProfiles',
+              'eks:ListTagsForResource',
+              'eks:DescribeNodegroup',
+              'eks:DescribeFargateProfile',
+              'states:DescribeStateMachine',
+              'states:ListStateMachines',
+              'states:ListTagsForResource',
+              'sns:ListSubscriptionsByTopic',
+              'sns:ListTopics',
+              'sns:ListSubscriptions',
+              'ses:GetIdentityMailFromDomainAttributes',
+              'ses:GetIdentityVerificationAttributes',
+              'sns:GetSubscriptionAttributes',
+              'ses:GetIdentityDkimAttributes',
+              'ses:ListIdentities'
+              ]
             Resource:
               - '*'
-
   InfralightCWSSACrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
