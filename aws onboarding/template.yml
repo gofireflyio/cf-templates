@@ -50,7 +50,26 @@ Resources:
 
           - Effect: Allow
             Action:
-              - 'ec2:SearchTransitGatewayRoutes'
+              - 'apigateway:GET',
+              - 'cloudwatch:ListDashboards',
+              - 'cloudwatch:GetDashboard',
+              - 'ec2:SearchTransitGatewayRoutes',
+              - 'eks:ListNodegroups',
+              - 'eks:ListFargateProfiles',
+              - 'eks:ListTagsForResource',
+              - 'eks:DescribeNodegroup',
+              - 'eks:DescribeFargateProfile',
+              - 'states:DescribeStateMachine',
+              - 'states:ListStateMachines',
+              - 'states:ListTagsForResource',
+              - 'sns:ListSubscriptionsByTopic',
+              - 'sns:ListTopics',
+              - 'sns:ListSubscriptions',
+              - 'ses:GetIdentityMailFromDomainAttributes',
+              - 'ses:GetIdentityVerificationAttributes',
+              - 'sns:GetSubscriptionAttributes',
+              - 'ses:GetIdentityDkimAttributes',
+              - 'ses:ListIdentities'
             Resource:
               - '*'
 
