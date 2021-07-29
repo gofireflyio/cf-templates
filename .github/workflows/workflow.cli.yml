@@ -1,0 +1,45 @@
+name: Infralight Release Template
+on:
+  workflow_dispatch:
+jobs:
+  CI:
+    env:
+      SLACK_CHANNEL: prod-deployments
+      S3_BUCKET_CLI: infralight-templates-public
+      AWS_REGION: us-east-1
+    name: "Infralight Templates Release"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository
+      uses: actions/checkout@v2
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.CI_AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.CI_AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+    - name: Upload AWS Fetching Template
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --exclude='*' --include='config_template.yml'
+      env:
+        SOURCE_DIR: 'aws_fetching_template'
+        AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}
+    - name: Upload AWS S3 Bucket Template
+      uses: jakejarvis/s3-sync-action@master
+      with:
+        args: --acl public-read --follow-symlinks --exclude='*' --include='template.yml'
+      env:
+        SOURCE_DIR: 'aws_s3_bucket_read_template'
+        DEST_DIR: 's3bucket-readonly'
+        AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}        
+    - name: Slack Notification
+      if: ${{ success() }}
+      uses: rtCamp/action-slack-notify@v2
+      env:
+        SLACK_COLOR: ${{ job.status }}
+        SLACK_ICON: https://assets-global.website-files.com/5d514fd9493b0575f03520bd/5d8e0b39fd776a3c238e8753_icons8_infinity_large_filled_2.svg
+        SLACK_MESSAGE: "${{ github.event.inputs.dest }} AWS Templates released to S3 from ${{ github.ref }}"
+        SLACK_TITLE: "${{ github.event.inputs.dest }} AWS Template release notification"
+        SLACK_USERNAME: cicdBot
+        SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
