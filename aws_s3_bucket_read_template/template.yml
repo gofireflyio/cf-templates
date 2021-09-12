@@ -32,6 +32,13 @@ Resources:
                 "/*"
               ]
               ]
+              
+              
+          - Effect: Allow
+            Action:
+              - 'kms:Decrypt'
+            Resource:
+              - !Join [':', ['arn:aws:kms:*', !Ref 'AWS::AccountId', 'key/*']]
 
       Roles:
         - !Select [1, !Split ["/", !Ref RoleArn]]
