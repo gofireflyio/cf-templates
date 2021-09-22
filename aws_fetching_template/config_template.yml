@@ -67,7 +67,8 @@ Resources:
               'ses:GetIdentityVerificationAttributes',
               'sns:GetSubscriptionAttributes',
               'ses:GetIdentityDkimAttributes',
-              'ses:ListIdentities'
+              'ses:ListIdentities',
+              'elasticfilesystem:DescribeLifecycleConfiguration'
               ]
             Resource:
               - '*'
