@@ -68,7 +68,7 @@ Resources:
               'sns:GetSubscriptionAttributes',
               'ses:GetIdentityDkimAttributes',
               'ses:ListIdentities',
-              'elasticfilesystem:DescribeLifecycleConfiguration'
+              'elasticfilesystem:DescribeLifecycleConfiguration',
               'ecr-public:ListTagsForResource',
               'ecr:DescribeRepositories'
               ]
