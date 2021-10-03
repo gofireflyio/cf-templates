@@ -69,6 +69,8 @@ Resources:
               'ses:GetIdentityDkimAttributes',
               'ses:ListIdentities',
               'elasticfilesystem:DescribeLifecycleConfiguration'
+              'ecr-public:ListTagsForResource',
+              'ecr:DescribeRepositories'
               ]
             Resource:
               - '*'
