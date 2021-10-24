@@ -51,6 +51,7 @@ Resources:
               'apigateway:GET',
               'cloudwatch:ListDashboards',
               'cloudwatch:GetDashboard',
+              'codebuild:BatchGetProjects',
               'ec2:SearchTransitGatewayRoutes',
               'eks:ListNodegroups',
               'eks:ListFargateProfiles',
