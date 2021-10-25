@@ -71,7 +71,8 @@ Resources:
               'ses:ListIdentities',
               'elasticfilesystem:DescribeLifecycleConfiguration',
               'ecr-public:ListTagsForResource',
-              'ecr:DescribeRepositories'
+              'ecr:DescribeRepositories',
+              'appconfig:ListApplications'
               ]
             Resource:
               - '*'
