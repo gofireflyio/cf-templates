@@ -72,7 +72,14 @@ Resources:
               'elasticfilesystem:DescribeLifecycleConfiguration',
               'ecr-public:ListTagsForResource',
               'ecr:DescribeRepositories',
-              'appconfig:ListApplications'
+              'appconfig:ListApplications',
+              'appconfig:ListTagsForResource',
+              'eks:ListIdentityProviderConfigs',
+              'eks:DescribeIdentityProviderConfig',
+              'eks:ListAddons',
+              'eks:DescribeAddon',
+              'efs:DescribeAccessPoints',
+              'efs:ListTagsForResource'
               ]
             Resource:
               - '*'
