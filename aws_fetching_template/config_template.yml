@@ -78,8 +78,8 @@ Resources:
               'eks:DescribeIdentityProviderConfig',
               'eks:ListAddons',
               'eks:DescribeAddon',
-              'efs:DescribeAccessPoints',
-              'efs:ListTagsForResource'
+              'elasticfilesystem:DescribeAccessPoints',
+              'elasticfilesystem:ListTagsForResource'
               ]
             Resource:
               - '*'
