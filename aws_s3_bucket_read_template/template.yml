@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: "2010-09-09"
-Description: Infralight S3 Bucket Read Permission
+Description: Firefly S3 Bucket Read Permission
 Parameters:
   RoleArn:
     Description: 'Please input your role arn'
