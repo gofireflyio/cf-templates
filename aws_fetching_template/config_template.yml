@@ -64,7 +64,9 @@ Resources:
               'eks:ListAddons',
               'eks:DescribeAddon',
               'elasticfilesystem:DescribeAccessPoints',
-              'elasticfilesystem:ListTagsForResource'
+              'elasticfilesystem:ListTagsForResource',
+              's3:Get*',
+              's3:List*'
               ]
             Resource:
               - '*'
