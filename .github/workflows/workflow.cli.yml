@@ -31,6 +31,7 @@ jobs:
         args: --acl public-read --follow-symlinks --exclude='*' --include='template.yml'
       env:
         SOURCE_DIR: 'aws_safe_onboarding_template'
+        DEST_DIR: 'terraform-redactor'
         AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}
     - name: Upload AWS S3 Bucket Template
       uses: jakejarvis/s3-sync-action@master
