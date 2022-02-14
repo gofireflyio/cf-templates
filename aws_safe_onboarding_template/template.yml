@@ -36,12 +36,18 @@ Resources:
     Properties:
       BucketName:
         !Join
-        - "-"
+        - '-'
         - - !FindInMap
             - FireflyEnvironment
             - env
             - redactedOutputS3BucketBaseName
-          - !Ref "AWS::AccountId"
+          - !Ref 'AWS::AccountId'
+      LifecycleConfiguration:
+        Rules:
+          - Id: 'DeleteOldLogs'
+            Prefix: 'logs/'
+            Status: 'Enabled'
+            ExpirationInDays: 7
 
   FireflyRedactorLambdaPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
