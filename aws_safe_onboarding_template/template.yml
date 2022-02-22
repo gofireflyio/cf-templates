@@ -103,6 +103,12 @@ Resources:
                 ]
               ]
 
+          - Effect: Allow
+            Action:
+              - 'kms:Decrypt'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:kms:*', !Ref 'AWS::AccountId', 'key/*' ] ]
+
   FireflyRedactorLambdaRole:
     Type: 'AWS::IAM::Role'
     Properties:
