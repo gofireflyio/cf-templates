@@ -30,6 +30,13 @@ Resources:
     Properties:
       PolicyDocument:
         Version: 2012-10-17
+        Statement:            
+          - Effect: Allow
+            Action:
+              - 'kms:Decrypt'
+            Resource:
+              - !Join [':', ['arn:aws:kms:*', !Ref 'AWS::AccountId', 'key/*']]
+
         Statement:
           - Effect: Allow
             Action: [
