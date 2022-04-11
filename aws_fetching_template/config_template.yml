@@ -5,24 +5,8 @@ Mappings:
     env:
       organizationID: "094724549126"
       SnsNameForConfirmCustomerDeployment: "handle-customer-actions"
-Metadata:
-  'AWS::CloudFormation::Interface':
-    ParameterGroups:
-      - Parameters:
-          - ExternalID
-    ParameterLabels:
-      ExternalID:
-        default: ExternalID
-Parameters:
-  ExternalID:
-    Description: >-
-      The cross-account access role created by the stack will use this value for
-      its ExternalID. Do not change this value!
-    Type: String
-    MinLength: '2'
-    MaxLength: '1224'
-    AllowedPattern: '[\w+=,.@:\/-]*'
-    ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
+Metadata: {}
+Parameters: {}
 Conditions: {}
 Resources:
   FireflyReadonlyDenylist:
@@ -203,9 +187,6 @@ Resources:
                     - env
                     - organizationID
                   - ':root'
-            Condition:
-              StringEquals:
-                'sts:ExternalId': !Ref ExternalID
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/SecurityAudit'
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
@@ -219,9 +200,6 @@ Outputs:
     Value: !GetAtt
       - FireflyCrossAccountAccessRole
       - Arn
-  ExternalID:
-    Description: ExternalID to share with Firefly
-    Value: !Ref ExternalID
   TemplateVersion:
     Description: gofirefly.io template version
     Value: 1.0.0
