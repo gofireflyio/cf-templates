@@ -82,6 +82,8 @@ Resources:
               - 's3:GetObject'
             Resource:
               - 'arn:aws:s3:::*/*.tfstate'
+              - 'arn:aws:s3:::elasticbeanstalk-*/*'
+              - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
   FireflyReadonlyPolicyPart1:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
