@@ -1,4 +1,4 @@
-name: Infralight Release Template
+name: Firefly Release CF Template
 on:
   workflow_dispatch:
 jobs:
