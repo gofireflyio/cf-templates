@@ -33,19 +33,14 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - 'kms:Decrypt'
-            Resource:
-              - !Join [ ':', [ 'arn:aws:kms:*', !Ref 'AWS::AccountId', 'key/*' ] ]
-          - Effect: Allow
-            Action:
               - 's3:GetObjectVersion'
             Resource:
-              - 'arn:aws:s3:::*/*.tfstate'
+              - 'arn:aws:s3:::ownbackup-state/*.tfstate'
           - Effect: Allow
             Action:
               - 's3:GetObject'
             Resource:
-              - 'arn:aws:s3:::*/*.tfstate'
+              - 'arn:aws:s3:::ownbackup-state/*.tfstate'
   FireflyReadonlyPolicyPart1:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
