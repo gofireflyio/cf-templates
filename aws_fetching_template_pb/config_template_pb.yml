@@ -211,7 +211,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
         - !Ref S3SpecificWritePermission
-      PermissionsBoundary: !Sub !Join [':', ['arn:aws:iam:', !Ref 'AWS::AccountId', 'policy/ais-permissions-boundaries']]
+      PermissionsBoundary: !Join [':', ['arn:aws:iam:', !Ref 'AWS::AccountId', 'policy/ais-permissions-boundaries']]
 Outputs:
   RoleARN:
     Description: >-
