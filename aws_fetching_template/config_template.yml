@@ -99,7 +99,6 @@ Resources:
               - 'chime:ListRoomMemberships'
               - 'codestar:Verify*'
               - 'cognito-sync:QueryRecords'
-              - 'config:Deliver*'
               - 'datapipeline:EvaluateExpression'
               - 'datapipeline:QueryObjects'
               - 'datapipeline:Validate*'
@@ -183,6 +182,7 @@ Resources:
               - 'arn:aws:s3:::*/*.tfstate'
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
+              - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
         
       
   FireflyCrossAccountAccessRole:
