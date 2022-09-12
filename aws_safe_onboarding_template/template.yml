@@ -83,7 +83,7 @@ Resources:
             Action:
               - 's3:GetObject'
             Resource:
-              - 'arn:aws:s3:::*/*.tfstate'
+              - 'arn:aws:s3:::*/*tfstate'
 
           - Effect: Allow
             Action:
