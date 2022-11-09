@@ -179,7 +179,7 @@ Resources:
             Action:
               - 's3:GetObject'
             NotResource:
-              - 'arn:aws:s3:::*/*tfstate'
+              - 'arn:aws:s3:::*/*state'
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
