@@ -31,7 +31,7 @@ Resources:
         ManagedPolicyArns:
           - !Ref InvokeFireflyEventBusPolicy
 
-    EventbridgePermissions:
+  EventbridgePermissions:
       Type: 'AWS::IAM::ManagedPolicy'
       Properties:
         PolicyDocument:
@@ -46,12 +46,12 @@ Resources:
               Action:
                 - 'iam:PassRole'
               Resource:
-                - !Ref InvokeFireflyEventBusRole
+                - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/invoke-firefly-event-bus'] ]
               Condition:
                 StringEquals:
                   "events.amazonaws.com": "iam:PassedToService"
         Roles:
-          - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/firefly-caa-role' ] ]
+          - 'firefly-caa-role'
 
 Outputs:
   EventsRoleARN:
