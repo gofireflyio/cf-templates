@@ -1,0 +1,278 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Firefly AWS Integration
+Mappings:
+  FireflyEnvironment:
+    env:
+      organizationID: "094724549126"
+      SnsNameForConfirmCustomerDeployment: "handle-customer-actions"
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Parameters:
+          - ExternalID
+    ParameterLabels:
+      ExternalID:
+        default: ExternalID
+Parameters:
+  ExternalID:
+    Description: >-
+      The cross-account access role created by the stack will use this value for
+      its ExternalID. Do not change this value!
+    Type: String
+    MinLength: '2'
+    MaxLength: '1224'
+    AllowedPattern: '[\w+=,.@:\/-]*'
+    ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
+Conditions: {}
+Resources:
+  FireflyReadonlyDenylist:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Deny
+            Action:
+              - 'acm-pca:DescribeCertificateAuthorityAuditReport'
+              - 'athena:BatchGetQueryExecution'
+              - 'athena:GetQueryExecution'
+              - 'athena:GetQueryResults'
+              - 'athena:GetQueryResultsStream'
+              - 'athena:ListQueryExecutions'
+              - 'auditmanager:*'
+              - 'aws-portal:*'
+              - 'braket:Search*'
+              - 'cassandra:*'
+              - 'chime:GetApp*'
+              - 'chime:ListChannel*'
+              - 'chime:ListChannels*'
+              - 'chime:DescribeChannel*'
+              - 'chime:ListApp*'
+              - 'chime:DescribeApp*'
+              - 'chime:GetUser*'
+              - 'chime:ListMeeting*'
+              - 'chime:ListMeetings*'
+              - 'chime:GetMeeting'
+              - 'chime:GetChannel*'
+              - 'chime:ListGroups'
+              - 'chime:GetPhoneNumber'
+              - 'chime:GetSipMedia*'
+              - 'chime:GetAccount*'
+              - 'chime:ListDirectories'
+              - 'chime:ListDomains'
+              - 'chime:GetMessagingSessionEndpoint'
+              - 'chime:ListUsers'
+              - 'chime:GetProxySession'
+              - 'chime:GetGlobalSettings'
+              - 'chime:GetEventsConfiguration'
+              - 'chime:ListAccountUsageReportData'
+              - 'chime:ListProxySessions'
+              - 'chime:ListAccounts'
+              - 'chime:ListCDRBucket'
+              - 'chime:ListCallingRegions'
+              - 'chime:ListSipRules'
+              - 'chime:ListAttendeeTags'
+              - 'chime:ListSupportedPhoneNumberCountries'
+              - 'chime:GetCDRBucket'
+              - 'chime:GetAttendee'
+              - 'chime:ListPhoneNumbers'
+              - 'chime:RetrieveDataExports'
+              - 'chime:ListAttendees'
+              - 'chime:ListApiKeys'
+              - 'chime:GetMediaCapturePipeline'
+              - 'chime:SearchAvailablePhoneNumbers'
+              - 'chime:GetTelephonyLimits'
+              - 'chime:ListBots'
+              - 'chime:GetRoom'
+              - 'chime:ListMediaCapturePipelines'
+              - 'chime:ListPhoneNumberOrders'
+              - 'chime:GetSipRule'
+              - 'chime:GetPhoneNumberOrder'
+              - 'chime:GetBot'
+              - 'chime:ValidateAccountResource'
+              - 'chime:ListRooms'
+              - 'chime:GetDomain'
+              - 'chime:ListDelegates'
+              - 'chime:GetRetentionSettings'
+              - 'chime:ListSipMediaApplications'
+              - 'chime:GetPhoneNumberSettings'
+              - 'chime:ListRoomMemberships'
+              - 'codestar:Verify*'
+              - 'cognito-sync:QueryRecords'
+              - 'datapipeline:EvaluateExpression'
+              - 'datapipeline:QueryObjects'
+              - 'datapipeline:Validate*'
+              - 'dax:BatchGetItem'
+              - 'dax:GetItem'
+              - 'dax:Query'
+              - 'dax:Scan'
+              - 'detective:SearchGraph'
+              - 'dms:Test*'
+              - 'ds:Check*'
+              - 'ds:Verify*'
+              - 'ds:DescribeCertificate'
+              - 'ds:ListCertificates'
+              - 'elastictranscoder:ListJobsByPipeline'
+              - 'elastictranscoder:ListJobsByStatus'
+              - 'kinesisvideo:GetClip'
+              - 'kinesisvideo:GetDASHStreamingSessionURL'
+              - 'kinesisvideo:GetHLSStreamingSessionURL'
+              - 'lakeformation:GetTableObjects'
+              - 'lakeformation:GetWorkUnitResults'
+              - 'lakeformation:GetWorkUnits'
+              - 'license-manager:GetAccessToken'
+              - 'license-manager:GetGrant'
+              - 'license-manager:ListTokens'
+              - 'lightsail:GetContainerAPIMetadata'
+              - 'lightsail:GetContainerImages'
+              - 'lightsail:GetContainerLog'
+              - 'lightsail:GetDiskSnapshot'
+              - 'lightsail:GetDiskSnapshots'
+              - 'lightsail:GetDistributionLatestCacheReset'
+              - 'lightsail:GetDistributionMetricData'
+              - 'lightsail:GetExportSnapshotRecords'
+              - 'lightsail:GetInstanceAccessDetails'
+              - 'lightsail:GetLoadBalancerMetricData'
+              - 'lightsail:GetRelationalDatabaseEvents'
+              - 'lightsail:GetRelationalDatabaseLogEvents'
+              - 'lightsail:GetRelationalDatabaseMetricData'
+              - 'lightsail:GetRelationalDatabaseSnapshot'
+              - 'lightsail:GetRelationalDatabaseSnapshots'
+              - 'logs:DescribeExportTasks'
+              - 'logs:DescribeQueries'
+              - 'logs:GetLogEvents'
+              - 'logs:GetLogRecord'
+              - 'logs:GetQueryResults'
+              - 'macie2:GetFindings'
+              - 'macie2:GetMacieSession'
+              - 'macie2:GetUsageStatistics'
+              - 'macie2:GetUsageTotals'
+              - 'macie2:ListFindings'
+              - 'polly:SynthesizeSpeech'
+              - 'rekognition:CompareFaces'
+              - 'wafv2:CheckCapacity'
+              - 'workdocs:CheckAlias'
+              - 'workmail:Search*'
+              - 'cognito-identity:GetCredentialsForIdentity'
+              - 'cognito-identity:GetIdentityPoolRoles'
+              - 'cognito-identity:GetOpenId*'
+              - 'cognito-idp:GetSigningCertificate'
+              - 'connect:GetFederationToken'
+              - 'secretsmanager:GetRandomPassword'
+              - 'secretsmanager:GetSecretValue'
+            Resource:
+              - '*'
+
+  S3SpecificWritePermission:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'kms:Decrypt'
+            Resource:
+              - !Join [':', ['arn:aws:kms:*', !Ref 'AWS::AccountId', 'key/*']]
+
+          - Effect: Deny
+            Action:
+              - 's3:GetObject'
+            NotResource:
+              - 'arn:aws:s3:::*/*tfstate'
+              - 'arn:aws:s3:::elasticbeanstalk-*/*'
+              - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
+              - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
+
+  InvokeFireflyEventBusPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'events:PutEvents'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:events:us-east-1', !FindInMap [ FireflyEnvironment, env, organizationID ], 'event-bus/prod-stablefly-event-bus' ] ]
+
+  InvokeFireflyEventBusRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: 'invoke-firefly-event-bus'
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Action: 'sts:AssumeRole'
+              Effect: Allow
+              Principal:
+                Service: "events.amazonaws.com"
+
+  EventbridgePermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'events:*'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:events:*', !Ref 'AWS::AccountId', 'rule/firefly-events-*' ] ]
+
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/invoke-firefly-event-bus'] ]
+            Condition:
+              StringEquals:
+                "events.amazonaws.com": "iam:PassedToService"
+
+  FireflyCrossAccountAccessRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'firefly-caa-role'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              AWS: !Join
+                - ''
+                - - 'arn:aws:iam::'
+                  - !FindInMap
+                    - FireflyEnvironment
+                    - env
+                    - organizationID
+                  - ':root'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalID
+      ManagedPolicyArns:
+        - 'arn:aws:iam::aws:policy/SecurityAudit'
+        - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
+        - !Ref FireflyReadonlyDenylist
+        - !Ref S3SpecificWritePermission
+        - !Ref EventbridgePermissions
+Outputs:
+  RoleARN:
+    Description: >-
+      Cross-account access role ARN to share with Firefly
+      integration
+    Value: !GetAtt
+      - FireflyCrossAccountAccessRole
+      - Arn
+  EventsRoleARN:
+    Description: >-
+      Access role ARN to invoke firefly event bus
+    Value: !GetAtt
+      - InvokeFireflyEventBusRole
+      - Arn
+  ExternalID:
+    Description: ExternalID to share with Firefly
+    Value: !Ref ExternalID
+  TemplateVersion:
+    Description: gofirefly.io template version
+    Value: 1.0.0
