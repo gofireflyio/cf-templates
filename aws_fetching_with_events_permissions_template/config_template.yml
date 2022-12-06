@@ -199,7 +199,7 @@ Resources:
   InvokeFireflyEventBusRole:
       Type: 'AWS::IAM::Role'
       Properties:
-        RoleName: 'invoke-firefly-event-bus'
+        RoleName: 'invoke-firefly-remote-event-bus'
         AssumeRolePolicyDocument:
           Version: 2012-10-17
           Statement:
@@ -207,6 +207,8 @@ Resources:
               Effect: Allow
               Principal:
                 Service: "events.amazonaws.com"
+        ManagedPolicyArns:
+          - !Ref InvokeFireflyEventBusPolicy
 
   EventbridgePermissions:
     Type: 'AWS::IAM::ManagedPolicy'
@@ -224,10 +226,10 @@ Resources:
             Action:
               - 'iam:PassRole'
             Resource:
-              - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/invoke-firefly-event-bus'] ]
+              - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/invoke-firefly-remote-event-bus'] ]
             Condition:
               StringEquals:
-                "events.amazonaws.com": "iam:PassedToService"
+                "iam:PassedToService": "events.amazonaws.com"
 
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
