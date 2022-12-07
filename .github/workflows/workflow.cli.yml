@@ -57,7 +57,7 @@ jobs:
     - name: Upload AWS Eventdriven Boarding Template
       uses: jakejarvis/s3-sync-action@master
       with:
-        args: --acl public-read --follow-symlinks --exclude='*' --include='template.yml'
+        args: --acl public-read --follow-symlinks --exclude='*' --include='config_template.yml'
       env:
         SOURCE_DIR: 'aws_fetching_with_events_permissions_template'
         DEST_DIR: 'event-driven'
@@ -73,7 +73,7 @@ jobs:
     - name: Upload AWS S3 Bucket Template
       uses: jakejarvis/s3-sync-action@master
       with:
-        args: --acl public-read --follow-symlinks --exclude='*' --include='config_template.yml'
+        args: --acl public-read --follow-symlinks --exclude='*' --include='template.yml'
       env:
         SOURCE_DIR: 'aws_s3_bucket_read_template'
         DEST_DIR: 's3bucket-readonly'
