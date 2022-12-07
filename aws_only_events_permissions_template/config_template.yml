@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Firefly Create eventbridge rules by workflow
+Mappings:
+  FireflyEnvironment:
+    env:
+      organizationID: "094724549126"
+Resources:
+  InvokeFireflyEventBusPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'events:PutEvents'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:events:us-east-1', !FindInMap [ FireflyEnvironment, env, organizationID ], 'event-bus/prod-stablefly-event-bus' ] ]
+
+  InvokeFireflyEventBusRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'invoke-firefly-remote-event-bus'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service: "events.amazonaws.com"
+      ManagedPolicyArns:
+        - !Ref InvokeFireflyEventBusPolicy
+
+  EventbridgePermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'events:*'
+            Resource: !Join [ ':', [ 'arn:aws:events:*', !Ref 'AWS::AccountId', 'rule/firefly-events-*' ] ]
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource: !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/invoke-firefly-remote-event-bus'] ]
+            Condition:
+              StringEquals:
+                "iam:PassedToService": "events.amazonaws.com"
+      Roles:
+        - 'firefly-caa-role'
+
+Outputs:
+  EventsRoleARN:
+    Description: >-
+      Access role ARN to invoke firefly event bus
+    Value: !GetAtt
+      - InvokeFireflyEventBusRole
+      - Arn
+  TemplateVersion:
+    Description: gofirefly.io template version
+    Value: 1.0.0
