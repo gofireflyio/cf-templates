@@ -61,7 +61,7 @@ jobs:
       env:
         SOURCE_DIR: 'aws_fetching_with_events_permissions_template'
         DEST_DIR: 'event-driven'
-        AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}}
+        AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}
     - name: Upload AWS Eventdriven Boarding Exist Integration Template
       uses: jakejarvis/s3-sync-action@master
       with:
