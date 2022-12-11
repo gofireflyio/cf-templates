@@ -59,7 +59,7 @@ jobs:
       with:
         args: --acl public-read --follow-symlinks --exclude='*' --include='template.yml'
       env:
-        SOURCE_DIR: 'aws_fetching_without_events_permissions_template'
+        SOURCE_DIR: 'aws_fetching_readonly_template'
         DEST_DIR: 'no-event-driven'
         AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}
     - name: Upload AWS Eventdriven Boarding Exist Integration Template

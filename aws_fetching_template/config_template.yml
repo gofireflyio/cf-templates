@@ -163,7 +163,7 @@ Resources:
             Resource:
               - '*'
 
-  S3SpecificWritePermission:
+  S3Permissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
@@ -183,6 +183,11 @@ Resources:
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
+
+          - Effect: Allow
+              Action:
+                - 's3:PutBucketNotification'
+              Resource: "arn:aws:s3:::*"
 
   InvokeFireflyEventBusPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
@@ -256,7 +261,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/SecurityAudit'
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
-        - !Ref S3SpecificWritePermission
+        - !Ref S3Permissions
         - !Ref EventbridgePermissions
 Outputs:
   RoleARN:
