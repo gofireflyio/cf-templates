@@ -25,6 +25,7 @@ Parameters:
     ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
 Conditions: {}
 Resources:
+#   required
   FireflyReadonlyDenylist:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -162,8 +163,8 @@ Resources:
               - 'secretsmanager:GetSecretValue'
             Resource:
               - '*'
-
-  S3SpecificWritePermission:
+  #   required
+  S3ReadPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
@@ -183,8 +184,66 @@ Resources:
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
-        
-      
+#  feature: event-driven IAC
+  S3NotificationsPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+              Action:
+                - 's3:PutBucketNotification'
+              Resource: "arn:aws:s3:::*"
+#  feature: event-driven inventory
+  InvokeFireflyEventBusPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'events:PutEvents'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:events:us-east-1', !FindInMap [ FireflyEnvironment, env, organizationID ], 'event-bus/prod-stablefly-event-bus' ] ]
+#  feature: event-driven inventory
+  InvokeFireflyEventBusRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'invoke-firefly-remote-event-bus'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service: "events.amazonaws.com"
+      ManagedPolicyArns:
+        - !Ref InvokeFireflyEventBusPolicy
+
+#  feature: event-driven inventory
+  EventbridgePermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'events:*'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:events:*', !Ref 'AWS::AccountId', 'rule/firefly-events-*' ] ]
+
+          - Effect: Allow
+            Action:
+              - 'iam:PassRole'
+            Resource:
+              - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', 'role/invoke-firefly-remote-event-bus'] ]
+            Condition:
+              StringEquals:
+                "iam:PassedToService": "events.amazonaws.com"
+# required
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -210,7 +269,9 @@ Resources:
         - 'arn:aws:iam::aws:policy/SecurityAudit'
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
-        - !Ref S3SpecificWritePermission
+        - !Ref S3ReadPermissions
+        - !Ref S3NotificationsPermissions
+        - !Ref EventbridgePermissions
 Outputs:
   RoleARN:
     Description: >-
@@ -218,6 +279,12 @@ Outputs:
       integration
     Value: !GetAtt
       - FireflyCrossAccountAccessRole
+      - Arn
+  EventsRoleARN:
+    Description: >-
+      Access role ARN to invoke firefly event bus
+    Value: !GetAtt
+      - InvokeFireflyEventBusRole
       - Arn
   ExternalID:
     Description: ExternalID to share with Firefly
