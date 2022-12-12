@@ -54,7 +54,7 @@ jobs:
         SOURCE_DIR: 'aws_safe_onboarding_template'
         DEST_DIR: 'terraform-redactor'
         AWS_S3_BUCKET: ${{ env.S3_BUCKET_CLI }}
-    - name: Upload AWS Fetching Template without events permissions
+    - name: Upload AWS readonly Fetching Template
       uses: jakejarvis/s3-sync-action@master
       with:
         args: --acl public-read --follow-symlinks --exclude='*' --include='template.yml'
