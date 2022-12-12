@@ -25,6 +25,7 @@ Parameters:
     ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
 Conditions: {}
 Resources:
+#   required
   FireflyReadonlyDenylist:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -162,8 +163,8 @@ Resources:
               - 'secretsmanager:GetSecretValue'
             Resource:
               - '*'
-
-  S3Permissions:
+  #   required
+  S3ReadPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
@@ -183,12 +184,18 @@ Resources:
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
-
+#  feature: event-driven IAC
+  S3NotificationsPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
           - Effect: Allow
               Action:
                 - 's3:PutBucketNotification'
               Resource: "arn:aws:s3:::*"
-
+#  feature: event-driven inventory
   InvokeFireflyEventBusPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -200,7 +207,7 @@ Resources:
               - 'events:PutEvents'
             Resource:
               - !Join [ ':', [ 'arn:aws:events:us-east-1', !FindInMap [ FireflyEnvironment, env, organizationID ], 'event-bus/prod-stablefly-event-bus' ] ]
-
+#  feature: event-driven inventory
   InvokeFireflyEventBusRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -215,6 +222,7 @@ Resources:
       ManagedPolicyArns:
         - !Ref InvokeFireflyEventBusPolicy
 
+#  feature: event-driven inventory
   EventbridgePermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -235,7 +243,7 @@ Resources:
             Condition:
               StringEquals:
                 "iam:PassedToService": "events.amazonaws.com"
-
+# required
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -261,7 +269,8 @@ Resources:
         - 'arn:aws:iam::aws:policy/SecurityAudit'
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
-        - !Ref S3Permissions
+        - !Ref S3ReadPermissions
+        - !Ref S3NotificationsPermissions
         - !Ref EventbridgePermissions
 Outputs:
   RoleARN:
