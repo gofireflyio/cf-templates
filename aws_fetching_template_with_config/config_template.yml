@@ -25,6 +25,7 @@ Parameters:
     ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
 Conditions: {}
 Resources:
+#   required
   FireflyReadonlyDenylist:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -162,8 +163,8 @@ Resources:
               - 'secretsmanager:GetSecretValue'
             Resource:
               - '*'
-
-  S3SpecificWritePermission:
+  #   required
+  S3ReadPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
@@ -182,8 +183,18 @@ Resources:
               - 'arn:aws:s3:::*/*tfstate'
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
-              - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
-
+#  feature: event-driven IAC
+  S3NotificationsPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+              Action:
+                - 's3:PutBucketNotification'
+              Resource: "arn:aws:s3:::*"
+#  feature: event-driven inventory
   InvokeFireflyEventBusPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -195,21 +206,22 @@ Resources:
               - 'events:PutEvents'
             Resource:
               - !Join [ ':', [ 'arn:aws:events:us-east-1', !FindInMap [ FireflyEnvironment, env, organizationID ], 'event-bus/prod-stablefly-event-bus' ] ]
-
+#  feature: event-driven inventory
   InvokeFireflyEventBusRole:
-      Type: 'AWS::IAM::Role'
-      Properties:
-        RoleName: 'invoke-firefly-remote-event-bus'
-        AssumeRolePolicyDocument:
-          Version: 2012-10-17
-          Statement:
-            - Action: 'sts:AssumeRole'
-              Effect: Allow
-              Principal:
-                Service: "events.amazonaws.com"
-        ManagedPolicyArns:
-          - !Ref InvokeFireflyEventBusPolicy
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'invoke-firefly-remote-event-bus'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              Service: "events.amazonaws.com"
+      ManagedPolicyArns:
+        - !Ref InvokeFireflyEventBusPolicy
 
+#  feature: event-driven inventory
   EventbridgePermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -230,7 +242,66 @@ Resources:
             Condition:
               StringEquals:
                 "iam:PassedToService": "events.amazonaws.com"
-
+#  feature: config fetch
+  ConfigBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join [ '-', [ 'aws-config-service-bucket', !Ref 'AWS::AccountId'] ]
+#  feature: config fetch
+  ConfiPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:*'
+            Resource:
+              - !Join [ '', [ 'arn:aws:s3:::', !Ref ConfigBucket ] ]
+              - !Join [ '', [ 'arn:aws:s3:::', !Ref ConfigBucket, '/*' ] ]
+          - Effect: Allow
+            Action:
+              - 'logs:CreateLogStream'
+              - 'logs:CreateLogGroup'
+            Resource:
+              - 'arn:aws:logs:*:*:log-group:/aws/config/*'
+          - Effect: Allow
+            Action:
+              - 'logs:PutLogEvents'
+            Resource:
+              - 'arn:aws:logs:*:*:log-group:/aws/config/*:log-stream:config-rule-evaluation/*'
+#  feature: config fetch
+  ConfiFireflyPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'config:StartConfigurationRecorder'
+              - 'config:StopConfigurationRecorder'
+              - 'config:PutDeliveryChannel'
+              - 'config:PutConfigurationRecorder'
+#  feature: config fetch
+    ConfigRole:
+      Type: 'AWS::IAM::Role'
+      Properties:
+        RoleName: 'aws-config-role'
+        AssumeRolePolicyDocument:
+          Version: 2012-10-17
+          Statement:
+            - Action: 'sts:AssumeRole'
+              Effect: Allow
+              Principal:
+                Service: "config.amazonaws.com"
+        ManagedPolicyArns:
+          - 'arn:aws:iam::aws:policy/SecurityAudit'
+          - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
+          - !Ref FireflyReadonlyDenylist
+          - !Ref ConfiPermissions
+# required
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -256,8 +327,10 @@ Resources:
         - 'arn:aws:iam::aws:policy/SecurityAudit'
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
-        - !Ref S3SpecificWritePermission
+        - !Ref S3ReadPermissions
+        - !Ref S3NotificationsPermissions
         - !Ref EventbridgePermissions
+        - !Ref ConfiFireflyPermissions
 Outputs:
   RoleARN:
     Description: >-
