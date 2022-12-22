@@ -207,7 +207,7 @@ Resources:
               - 'events:PutEvents'
             Resource:
               - !Join [ ':', [ 'arn:aws:events:us-east-1', !FindInMap [ FireflyEnvironment, env, organizationID ], 'event-bus/prod-stablefly-event-bus' ] ]
-  #  feature: event-driven inventory
+
   InvokeFireflyEventBusRole:
     Type: 'AWS::IAM::Role'
     Properties:
@@ -222,7 +222,7 @@ Resources:
       ManagedPolicyArns:
         - !Ref InvokeFireflyEventBusPolicy
 
-  #  feature: event-driven inventory
+
   EventbridgePermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -248,7 +248,7 @@ Resources:
     Type: 'AWS::S3::Bucket'
     Properties:
       BucketName: !Join [ '-', [ 'aws-config-service-bucket', !Ref 'AWS::AccountId'] ]
-  #  feature: config fetch
+
   ConfigPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -272,7 +272,7 @@ Resources:
               - 'logs:PutLogEvents'
             Resource:
               - 'arn:aws:logs:*:*:log-group:/aws/config/*:log-stream:config-rule-evaluation/*'
-  #  feature: config fetch
+
   ConfigFireflyPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
