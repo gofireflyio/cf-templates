@@ -5,6 +5,7 @@ Mappings:
     env:
       organizationID: "094724549126"
       SnsNameForConfirmCustomerDeployment: "handle-customer-actions"
+      SnsNameForSettingCostS3Notification: "sns-cost-notification"
 Metadata:
   'AWS::CloudFormation::Interface':
     ParameterGroups:
@@ -314,6 +315,52 @@ Resources:
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
         - !Ref ConfigPermissions
+
+  #  feature: cost
+  CostReport:
+    Type: 'AWS::CUR::ReportDefinition'
+    Properties:
+      Compression: !Ref Compression
+      Format: !Ref Format
+      RefreshClosedReports: "True"
+      ReportName: !Ref ReportName
+      ReportVersioning: OVERWRITE_REPORT
+
+  CostBucket:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketName: !Join [ '-', [ 'aws-billing-cost-and-usage-report', !Ref 'AWS::AccountId'] ]
+      NotificationConfiguration:
+        TopicConfigurations:
+          - Topic: 'arn:aws:sns:us-east-1:824784664836:cost-topic'
+            Event: 's3:ObjectCreated:*'
+            Filter:
+              S3Key:
+                Rules:
+                  - Name: suffix
+                    Value: 'Manifest.json'
+
+  CostReportBucketPolicy:
+    Type: 'AWS::S3::BucketPolicy'
+    Properties:
+      Bucket: !Ref CostBucket
+      PolicyDocument:
+        Version: 2012-10-17
+          Statement:
+              - Effect: Allow
+                Principal:
+                  Service: 'billingreports.amazonaws.com'
+                Action:
+                  - 's3:GetBucketAcl'
+                  - 's3:GetBucketPolicy'
+                  - 's3:PutObject'
+                Resource:
+                  - !Join [ '', [ 'arn:aws:s3:::', !Ref CostBucket ] ]
+                  - !Join [ '', [ 'arn:aws:s3:::', !Ref CostBucket, '/*' ] ]
+                Condition:
+                  StringEquals:
+                    'aws:SourceArn': !Join [ ':', [ 'arn:aws:cur:us-east-1', !Ref 'AWS::AccountId', 'definition/*' ] ]
+
   # required
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
