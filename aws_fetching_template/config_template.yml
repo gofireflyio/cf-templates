@@ -243,77 +243,7 @@ Resources:
             Condition:
               StringEquals:
                 "iam:PassedToService": "events.amazonaws.com"
-  #  feature: config fetch
-  ConfigBucket:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      BucketName: !Join [ '-', [ 'aws-config-service-bucket', !Ref 'AWS::AccountId'] ]
 
-  ConfigPermissions:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - 's3:*'
-            Resource:
-              - !Join [ '', [ 'arn:aws:s3:::', !Ref ConfigBucket ] ]
-              - !Join [ '', [ 'arn:aws:s3:::', !Ref ConfigBucket, '/*' ] ]
-          - Effect: Allow
-            Action:
-              - 'logs:CreateLogStream'
-              - 'logs:CreateLogGroup'
-            Resource:
-              - 'arn:aws:logs:*:*:log-group:/aws/config/*'
-          - Effect: Allow
-            Action:
-              - 'logs:PutLogEvents'
-            Resource:
-              - 'arn:aws:logs:*:*:log-group:/aws/config/*:log-stream:config-rule-evaluation/*'
-
-  ConfigFireflyPermissions:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - 'config:StartConfigurationRecorder'
-              - 'config:StopConfigurationRecorder'
-              - 'config:PutDeliveryChannel'
-              - 'config:PutConfigurationRecorder'
-              - 'config:DeleteConfigurationRecorder'
-              - 'config:DeleteDeliveryChannel'
-            Resource:
-              - '*'
-          - Effect: Allow
-            Action:
-              - 'iam:PassRole'
-            Resource:
-              - !Join [ ':', [ 'arn:aws:iam:', !Ref 'AWS::AccountId', !Join ['', ['role/', !Ref  ConfigRole]]] ]
-            Condition:
-              StringEquals:
-                "iam:PassedToService": "config.amazonaws.com"
-    #  feature: config fetch
-  ConfigRole:
-    Type: 'AWS::IAM::Role'
-    Properties:
-      RoleName: 'aws-config-role-firefly'
-      AssumeRolePolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Action: 'sts:AssumeRole'
-            Effect: Allow
-            Principal:
-              Service: "config.amazonaws.com"
-      ManagedPolicyArns:
-        - 'arn:aws:iam::aws:policy/SecurityAudit'
-        - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
-        - !Ref FireflyReadonlyDenylist
-        - !Ref ConfigPermissions
   # required
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
@@ -343,7 +273,6 @@ Resources:
         - !Ref S3ReadPermissions
         - !Ref S3NotificationsPermissions
         - !Ref EventbridgePermissions
-        - !Ref ConfigFireflyPermissions
 Outputs:
   RoleARN:
     Description: >-
