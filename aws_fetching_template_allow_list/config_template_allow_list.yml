@@ -1018,35 +1018,6 @@ Resources:
               Service: "events.amazonaws.com"
       ManagedPolicyArns:
         - !Ref InvokeFireflyEventBusPolicy
-  # feature: config fetch
-  ConfigBucket:
-    Type: 'AWS::S3::Bucket'
-    Properties:
-      BucketName: !Join [ '-', [ 'aws-config-service-bucket', !Ref 'AWS::AccountId' ] ]
-  # feature - config fetch
-  ConfigPermissions:
-    Type: 'AWS::IAM::ManagedPolicy'
-    Properties:
-      PolicyDocument:
-        Version: 2012-10-17
-        Statement:
-          - Effect: Allow
-            Action:
-              - 's3:*'
-            Resource:
-              - !Join [ '', [ 'arn:aws:s3:::', !Ref ConfigBucket ] ]
-              - !Join [ '', [ 'arn:aws:s3:::', !Ref ConfigBucket, '/*' ] ]
-          - Effect: Allow
-            Action:
-              - 'logs:CreateLogStream'
-              - 'logs:CreateLogGroup'
-            Resource:
-              - 'arn:aws:logs:*:*:log-group:/aws/config/*'
-          - Effect: Allow
-            Action:
-              - 'logs:PutLogEvents'
-            Resource:
-              - 'arn:aws:logs:*:*:log-group:/aws/config/*:log-stream:config-rule-evaluation/*'
   # feature - config fetch
   ConfigRole:
     Type: 'AWS::IAM::Role'
@@ -1069,7 +1040,6 @@ Resources:
         - !Ref FireflyReadonlyPolicyPart5
         - !Ref FireflyReadonlyPolicyPart6
         - !Ref FireflyReadonlyPolicyPart7
-        - !Ref ConfigPermissions
   FireflyAdditionalPermission:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
