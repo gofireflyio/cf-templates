@@ -59,7 +59,7 @@ Resources:
                 - "codecommit:ListPullRequests"
                 - "codecommit:PutFile"
             Resource:
-              - 'arn:aws:codecommit:*:111062076341:*'
+              - !Sub 'arn:aws:codecommit:*:${AWS::AccountId}:*'
 
   FireflyCodeCommitRole:
     Type: 'AWS::IAM::Role'
