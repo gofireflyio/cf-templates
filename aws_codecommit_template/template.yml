@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Firefly CodeCommit Integration
+Mappings:
+  FireflyEnvironment:
+    env:
+      organizationID: "094724549126"
+      SnsNameForConfirmCustomerDeployment: "handle-customer-actions"
+Metadata:
+  'AWS::CloudFormation::Interface':
+    ParameterGroups:
+      - Parameters:
+          - ExternalID
+    ParameterLabels:
+      ExternalID:
+        default: ExternalID
+Parameters:
+  ExternalID:
+    Description: >-
+      The cross-account access role created by the stack will use this value for
+      its ExternalID. Do not change this value!
+    Type: String
+    MinLength: '2'
+    MaxLength: '1224'
+    AllowedPattern: '[\w+=,.@:\/-]*'
+    ConstraintDescription: 'Invalid ExternalID value.  Must match pattern [\w+=,.@:\/-]*'
+Conditions: {}
+Resources:
+  FireflyCodeCommitPolicy:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+                - "codecommit:BatchGetCommits"
+                - "codecommit:BatchGetPullRequests"
+                - "codecommit:BatchGetRepositories"
+                - "codecommit:CreateBranch"
+                - "codecommit:CreateCommit"
+                - "codecommit:CreatePullRequest"
+                - "codecommit:DescribePullRequestEvents"
+                - "codecommit:GetBranch"
+                - "codecommit:GetComment"
+                - "codecommit:GetCommentsForComparedCommit"
+                - "codecommit:GetCommentsForPullRequest"
+                - "codecommit:GetCommit"
+                - "codecommit:GetCommitHistory"
+                - "codecommit:GetDifferences"
+                - "codecommit:GetFile"
+                - "codecommit:GetFolder"
+                - "codecommit:GetObjectIdentifier"
+                - "codecommit:GetPullRequest"
+                - "codecommit:GetRepository"
+                - "codecommit:GetTree"
+                - "codecommit:GitPull"
+                - "codecommit:GitPush"
+                - "codecommit:ListBranches"
+                - "codecommit:ListPullRequests"
+                - "codecommit:PutFile"
+            Resource:
+              - !Sub 'arn:aws:codecommit:*:${AWS::AccountId}:*'
+
+  FireflyCodeCommitRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      RoleName: 'firefly-codecommit-role'
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action: 'sts:AssumeRole'
+            Effect: Allow
+            Principal:
+              AWS: !Join
+                - ''
+                - - 'arn:aws:iam::'
+                  - !FindInMap
+                    - FireflyEnvironment
+                    - env
+                    - organizationID
+                  - ':root'
+            Condition:
+              StringEquals:
+                'sts:ExternalId': !Ref ExternalID
+      ManagedPolicyArns:
+        - !Ref FireflyCodeCommitPolicy
+
+Outputs:
+  RoleARN:
+    Description: >-
+      Cross-account access role ARN to share with Firefly
+      integration
+    Value: !GetAtt
+      - FireflyCodeCommitRole
+      - Arn
+  ExternalID:
+    Description: ExternalID to share with Firefly
+    Value: !Ref ExternalID
+  TemplateVersion:
+    Description: gofirefly.io template version
+    Value: 1.0.0
