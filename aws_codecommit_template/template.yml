@@ -33,38 +33,38 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-                - "codecommit:BatchGetCommits"
-                - "codecommit:BatchGetPullRequests"
-                - "codecommit:BatchGetRepositories"
-                - "codecommit:CreateBranch"
-                - "codecommit:CreateCommit"
-                - "codecommit:CreatePullRequest"
-                - "codecommit:DescribePullRequestEvents"
-                - "codecommit:GetBranch"
-                - "codecommit:GetComment"
-                - "codecommit:GetCommentsForComparedCommit"
-                - "codecommit:GetCommentsForPullRequest"
-                - "codecommit:GetCommit"
-                - "codecommit:GetCommitHistory"
-                - "codecommit:GetDifferences"
-                - "codecommit:GetFile"
-                - "codecommit:GetFolder"
-                - "codecommit:GetObjectIdentifier"
-                - "codecommit:GetPullRequest"
-                - "codecommit:GetRepository"
-                - "codecommit:GetTree"
-                - "codecommit:GitPull"
-                - "codecommit:GitPush"
-                - "codecommit:ListBranches"
-                - "codecommit:ListPullRequests"
-                - "codecommit:PutFile"
+              - "codecommit:BatchGetCommits"
+              - "codecommit:BatchGetPullRequests"
+              - "codecommit:BatchGetRepositories"
+              - "codecommit:CreateBranch"
+              - "codecommit:CreateCommit"
+              - "codecommit:CreatePullRequest"
+              - "codecommit:DescribePullRequestEvents"
+              - "codecommit:GetBranch"
+              - "codecommit:GetComment"
+              - "codecommit:GetCommentsForComparedCommit"
+              - "codecommit:GetCommentsForPullRequest"
+              - "codecommit:GetCommit"
+              - "codecommit:GetCommitHistory"
+              - "codecommit:GetDifferences"
+              - "codecommit:GetFile"
+              - "codecommit:GetFolder"
+              - "codecommit:GetObjectIdentifier"
+              - "codecommit:GetPullRequest"
+              - "codecommit:GetRepository"
+              - "codecommit:GetTree"
+              - "codecommit:GitPull"
+              - "codecommit:GitPush"
+              - "codecommit:ListBranches"
+              - "codecommit:ListPullRequests"
+              - "codecommit:PutFile"
             Resource:
-                - !Sub 'arn:aws:codecommit:*:${AWS::AccountId}:*'
+              - !Sub 'arn:aws:codecommit:*:${AWS::AccountId}:*'
           - Effect: Allow
             Action:
-                - "codecommit:ListRepositories"
+              - "codecommit:ListRepositories"
             Resource:
-                - "*"
+              - "*"
 
   FireflyCodeCommitRole:
     Type: 'AWS::IAM::Role'
