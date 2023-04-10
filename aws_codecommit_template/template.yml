@@ -56,11 +56,15 @@ Resources:
                 - "codecommit:GitPull"
                 - "codecommit:GitPush"
                 - "codecommit:ListBranches"
-                - "codecommit:ListRepositories"
                 - "codecommit:ListPullRequests"
                 - "codecommit:PutFile"
             Resource:
               - !Sub 'arn:aws:codecommit:*:${AWS::AccountId}:*'
+          - Effect: Allow
+            Action:
+                - "codecommit:ListRepositories"
+            Resource:
+              - "*"
 
   FireflyCodeCommitRole:
     Type: 'AWS::IAM::Role'
