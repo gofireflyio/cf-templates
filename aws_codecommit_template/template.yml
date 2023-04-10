@@ -56,6 +56,7 @@ Resources:
                 - "codecommit:GitPull"
                 - "codecommit:GitPush"
                 - "codecommit:ListBranches"
+                - "codecommit:ListRepositories"
                 - "codecommit:ListPullRequests"
                 - "codecommit:PutFile"
             Resource:
