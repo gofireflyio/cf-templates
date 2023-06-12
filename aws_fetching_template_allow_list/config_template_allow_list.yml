@@ -992,6 +992,71 @@ Resources:
             ]
             Resource:
               - '*'
+  FireflyReadonlyPolicyPart8:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: [
+              "glue:SearchTables",
+              "glue:GetCrawler",
+              "glue:GetDataCatalogEncryptionSettings",
+              "glue:BatchGetDevEndpoints",
+              "glue:GetTableVersions",
+              "glue:GetPartitions",
+              "glue:GetSchema",
+              "glue:GetDevEndpoint",
+              "glue:GetSecurityConfiguration",
+              "glue:GetResourcePolicy",
+              "glue:GetTrigger",
+              "glue:GetUserDefinedFunction",
+              "glue:GetResourcePolicies",
+              "glue:GetUserDefinedFunctions",
+              "glue:GetClassifier",
+              "glue:GetSchemaByDefinition",
+              "glue:ListWorkflows",
+              "glue:GetJobs",
+              "glue:GetTables",
+              "glue:GetSchemaVersionsDiff",
+              "glue:GetTriggers",
+              "glue:GetPartition",
+              "glue:GetDevEndpoints",
+              "glue:BatchGetWorkflows",
+              "glue:ListDevEndpoints",
+              "glue:BatchGetJobs",
+              "glue:ListRegistries",
+              "glue:GetJob",
+              "glue:GetWorkflow",
+              "glue:ListSchemaVersions",
+              "glue:GetConnections",
+              "glue:GetCrawlers",
+              "glue:GetClassifiers",
+              "glue:BatchGetBlueprints",
+              "glue:GetTableVersion",
+              "glue:GetConnection",
+              "glue:ListMLTransforms",
+              "glue:ListSchemas",
+              "glue:GetMLTransforms",
+              "glue:GetRegistry",
+              "glue:BatchGetPartition",
+              "glue:GetSecurityConfigurations",
+              "glue:ListTriggers",
+              "glue:GetDatabases",
+              "glue:ListJobs",
+              "glue:GetTags",
+              "glue:GetTable",
+              "glue:GetDatabase",
+              "glue:BatchGetCrawlers",
+              "glue:GetSchemaVersion",
+              "glue:BatchGetTriggers",
+              "glue:BatchGetCustomEntityTypes",
+              "glue:ListCrawlers",
+              "glue:GetCrawlerMetrics"
+            ]
+            Resource:
+              - '*'
   # feature - event-driven inventory
   InvokeFireflyEventBusPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
@@ -1040,6 +1105,7 @@ Resources:
         - !Ref FireflyReadonlyPolicyPart5
         - !Ref FireflyReadonlyPolicyPart6
         - !Ref FireflyReadonlyPolicyPart7
+        - !Ref FireflyReadonlyPolicyPart8
   FireflyAdditionalPermission:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
@@ -1134,6 +1200,7 @@ Resources:
         - !Ref FireflyReadonlyPolicyPart5
         - !Ref FireflyReadonlyPolicyPart6
         - !Ref FireflyReadonlyPolicyPart7
+        - !Ref FireflyReadonlyPolicyPart8
         - !Ref FireflyAdditionalPermission
 Outputs:
   RoleARN:
