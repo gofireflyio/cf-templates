@@ -41,7 +41,6 @@ Resources:
               - 'athena:GetQueryResultsStream'
               - 'athena:ListQueryExecutions'
               - 'auditmanager:*'
-              - 'aws-portal:*'
               - 'braket:Search*'
               - 'cassandra:*'
               - 'chime:GetApp*'
