@@ -160,6 +160,10 @@ Resources:
               - 'connect:GetFederationToken'
               - 'secretsmanager:GetRandomPassword'
               - 'secretsmanager:GetSecretValue'
+              - "consolidatedbilling:*"
+              - "freetier:*"
+              - "invoicing:*"
+              - "payments:*"
             Resource:
               - '*'
   #   required
