@@ -188,7 +188,7 @@ Resources:
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['',["arn:aws:s3:::*/", !Ref 'AWS::AccountId', "*ConfigSnapshot*.json.gz"] ]
   #   required
-  AdditionalFetchingPermission:
+  AdditionalFetchingPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
       PolicyDocument:
@@ -286,6 +286,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
         - !Ref S3ReadPermissions
+        - !Ref AdditionalFetchingPermissions
         - !Ref S3NotificationsPermissions
         - !Ref EventbridgePermissions
 Outputs:
