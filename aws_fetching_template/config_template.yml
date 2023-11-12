@@ -187,6 +187,18 @@ Resources:
               - 'arn:aws:s3:::elasticbeanstalk-*/*'
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['',["arn:aws:s3:::*/", !Ref 'AWS::AccountId', "*ConfigSnapshot*.json.gz"] ]
+  #   required
+  AdditionalFetchingPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 'elasticmapreduce:GetAutoTerminationPolicy'
+            Resource:
+              - !Join [':', ['arn:aws:elasticmapreduce:*', !Ref 'AWS::AccountId', 'cluster/*']]
   #  feature: event-driven IAC
   S3NotificationsPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
@@ -274,6 +286,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
         - !Ref S3ReadPermissions
+        - !Ref AdditionalFetchingPermissions
         - !Ref S3NotificationsPermissions
         - !Ref EventbridgePermissions
 Outputs:
