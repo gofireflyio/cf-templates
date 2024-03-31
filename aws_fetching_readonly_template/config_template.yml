@@ -183,6 +183,17 @@ Resources:
               - !Join ['/', [!Join ['-', ['arn:aws:s3:::aws-emr-resources', !Ref 'AWS::AccountId', '*']], '*']]
               - !Join ['', ['arn:aws:s3:::*/', !Ref 'AWS::AccountId', '*ConfigSnapshot*.json.gz']]
 
+  #  feature: event-driven IAC
+  S3NotificationsPermissions:
+    Type: 'AWS::IAM::ManagedPolicy'
+    Properties:
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action:
+              - 's3:PutBucketNotification'
+            Resource: "arn:aws:s3:::*"
 
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
@@ -210,6 +221,7 @@ Resources:
         - 'arn:aws:iam::aws:policy/ReadOnlyAccess'
         - !Ref FireflyReadonlyDenylist
         - !Ref S3SpecificWritePermission
+        - !Ref S3NotificationsPermissions
 Outputs:
   RoleARN:
     Description: >-
