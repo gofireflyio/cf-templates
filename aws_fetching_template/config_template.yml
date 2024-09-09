@@ -255,6 +255,7 @@ Resources:
               - 'events:DisableRule'
               - 'events:TestEventPattern'
               - 'events:EnableRule'
+              - 'events:TagResource'
             Resource:
               - !Join [ ':', [ 'arn:aws:events:*', !Ref 'AWS::AccountId', 'rule/firefly-events-*' ] ]
 
