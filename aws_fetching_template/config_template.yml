@@ -246,7 +246,16 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
-              - 'events:*'
+              - 'events:ListTargetsByRule'
+              - 'events:DescribeRule'
+              - 'events:PutTargets'
+              - 'events:PutRule'
+              - 'events:RemoveTargets'
+              - 'events:DeleteRule'
+              - 'events:DisableRule'
+              - 'events:TestEventPattern'
+              - 'events:EnableRule'
+              - 'events:TagResource'
             Resource:
               - !Join [ ':', [ 'arn:aws:events:*', !Ref 'AWS::AccountId', 'rule/firefly-events-*' ] ]
 
