@@ -196,6 +196,11 @@ Resources:
         Statement:
           - Effect: Allow
             Action:
+              - glue:GetResourcePolicies
+            Resource:
+              - "*"
+          - Effect: Allow
+            Action:
               - 'elasticmapreduce:GetAutoTerminationPolicy'
             Resource:
               - !Join [':', ['arn:aws:elasticmapreduce:*', !Ref 'AWS::AccountId', 'cluster/*']]
