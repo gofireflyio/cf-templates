@@ -29,6 +29,9 @@ Resources:
   FireflyReadonlyDenylist:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -170,6 +173,9 @@ Resources:
   S3ReadPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -191,6 +197,9 @@ Resources:
   AdditionalFetchingPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -208,6 +217,9 @@ Resources:
   S3NotificationsPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -219,6 +231,9 @@ Resources:
   InvokeFireflyEventBusPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -231,6 +246,9 @@ Resources:
   InvokeFireflyEventBusRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       RoleName: 'invoke-firefly-remote-event-bus'
       AssumeRolePolicyDocument:
         Version: 2012-10-17
@@ -246,6 +264,9 @@ Resources:
   EventbridgePermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -277,6 +298,9 @@ Resources:
   FireflyCrossAccountAccessRole:
     Type: 'AWS::IAM::Role'
     Properties:
+      Tags:
+        - Key: "firefly"
+          Value: "true"      
       RoleName: 'firefly-caa-role'
       AssumeRolePolicyDocument:
         Version: 2012-10-17
