@@ -29,9 +29,6 @@ Resources:
   FireflyReadonlyDenylist:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
-      Tags:
-        - Key: "firefly"
-          Value: "true"
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -173,9 +170,6 @@ Resources:
   S3ReadPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
-      Tags:
-        - Key: "firefly"
-          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -197,9 +191,6 @@ Resources:
   AdditionalFetchingPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
-      Tags:
-        - Key: "firefly"
-          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -216,10 +207,7 @@ Resources:
   #  feature: event-driven IAC
   S3NotificationsPermissions:
     Type: 'AWS::IAM::ManagedPolicy'
-    Properties:
-      Tags:
-        - Key: "firefly"
-          Value: "true"      
+    Properties:     
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -230,10 +218,7 @@ Resources:
   #  feature: event-driven inventory
   InvokeFireflyEventBusPolicy:
     Type: 'AWS::IAM::ManagedPolicy'
-    Properties:
-      Tags:
-        - Key: "firefly"
-          Value: "true"      
+    Properties: 
       PolicyDocument:
         Version: 2012-10-17
         Statement:
@@ -264,9 +249,6 @@ Resources:
   EventbridgePermissions:
     Type: 'AWS::IAM::ManagedPolicy'
     Properties:
-      Tags:
-        - Key: "firefly"
-          Value: "true"      
       PolicyDocument:
         Version: 2012-10-17
         Statement:
