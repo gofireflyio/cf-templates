@@ -207,7 +207,7 @@ Resources:
             Action:
               - glue:GetResourcePolicies
             Resource:
-              - "*"        
+              - "*"
           - Effect: Allow
             Action:
               - 'elasticmapreduce:GetAutoTerminationPolicy'
